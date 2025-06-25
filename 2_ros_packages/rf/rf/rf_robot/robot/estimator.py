@@ -38,7 +38,7 @@ class ESTIMATOR:
             if self.jump:
                 self.robot.controller.maxv = 0.1  # 1.4 # m/s : average walking speed
                 self.robot.controller.maxw = 0.2  # np.pi/2 #self.maxv/(0.272/2) # megarover wheel base = 0.272
-                self.robot.x[0:3] = self.x[0:3] + (self.robot.rover.odom[0:3] - self.odom[0:3])
+                self.robot.x[0:3] = self.tfx[0:3] + (self.robot.rover.odom[0:3] - self.odom[0:3])
             else:
                 self.robot.controller.maxv = 0.8  # 1.4 # m/s : average walking speed
                 self.robot.controller.maxw = 0.5  # np.pi/2 #self.maxv/(0.272/2) # megarover wheel base = 0.272
