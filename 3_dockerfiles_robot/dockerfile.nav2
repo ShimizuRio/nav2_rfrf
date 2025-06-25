@@ -9,3 +9,38 @@ SHELL [ "/bin/bash","-c" ]
 RUN apt update -y && apt install -y \
   ros-${ROS_DISTRO}-navigation2 \
   ros-${ROS_DISTRO}-nav2-bringup
+  && rm -rf /var/lib/apt/lists/*
+
+# git, vim, そしてcolconなどを含む開発ツールをインストール
+RUN apt-get update && apt-get install -y \
+    git \
+    vim \
+    wget \
+    ros-dev-tools \
+    && rm -rf /var/lib/apt/lists/*
+
+# 依存関係のインストールとワークスペースのビルド
+RUN source /opt/ros/${ROS_DISTRO}/setup.bash && \
+    rosdep init && \
+    rosdep update && \
+    rosdep install --from-paths src --ignore-src -r -y && \
+    colcon build
+
+# # STEP 4: 自動ビルド用スクリプトをコンテナにコピー
+# # ホストPCのentrypoint.shを、コンテナ内の/usr/local/bin/にコピーする
+# COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+
+# # STEP 5: コピーしたスクリプトに実行権限を付与する
+# RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# # STEP 5: ENTRYPOINTの設定
+# # コンテナが起動する際に、まずこのentrypoint.shを実行するよう設定する
+# ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
+# # STEP 6: デフォルトの作業ディレクトリを設定
+# WORKDIR /root/ros2_ws
+
+# # STEP 7: コンテナ起動時のデフォルトコマンド
+# # ただbashを起動するのではなく、実機用のメインローンチファイルを実行するよう変更。
+# # これがコンテナの「メインの仕事」になる。
+# CMD ["ros2", "launch", "rf", "rf_robot_localization_nav2.py"]
