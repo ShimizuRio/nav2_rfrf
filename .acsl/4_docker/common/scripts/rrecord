@@ -1,0 +1,6 @@
+#! /usr/bin/bash
+
+Dcmd ros2 bag record -a -o /common/ros_launcher/rosbag2/bag_$(date +%s)/
+
+# -o : 保存先ディレクトリ
+# /image_raw : 保存したいトピック名（複数指定可能）

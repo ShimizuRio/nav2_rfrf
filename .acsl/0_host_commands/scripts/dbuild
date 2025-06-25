@@ -1,0 +1,36 @@
+#! /usr/bin/bash
+# Build docker image
+# [Usage] arguments number <= 3
+# dbuild  : build image_${PROJECT}${TARGET} from base image using dockerfile.build
+# dbuild drone : build image_drone from base image using dockerfile.build ( verbose )
+# dbuild A B : build image B from image A using dockerfile.build
+# dbuild A B DF : build image B from image A using DF
+cd $ACSL_ROS2_DIR/4_docker/
+echo $(pwd)
+source $ACSL_ROS2_DIR/4_docker/common/scripts/super_echo
+
+if [ $# -eq 3 ]; then
+  ITAG=$1
+  OTAG=$2
+  DF=$3
+elif [ $# -eq 2 ]; then
+  ITAG=${1}
+  OTAG=${2}
+  DF=build
+elif [ $# -eq 1 ]; then
+  ITAG=base
+  OTAG=image_${1}
+  DF=build
+else
+  recho "Confirm setup.sh is completed by bash setup.sh PROJECT_NAME at 0_host_commands"
+  ITAG=base
+  OTAG=image_${PROJECT}${TARGET}
+  DF=build
+fi
+fx86=$(uname -a | grep x86)
+if [[ -n $fx86 ]]; then
+  ITAG=${ITAG%_x86}_x86
+  OTAG=${OTAG%_x86}_x86
+fi
+gecho "DBUILD: build $OTAG FROM $ITAG using dockerfile.$DF"
+ITAG=$ITAG OTAG=$OTAG DF=$DF docker compose build image_build --no-cache

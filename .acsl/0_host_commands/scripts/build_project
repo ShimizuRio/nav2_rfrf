@@ -1,0 +1,44 @@
+#! /usr/bin/bash
+# colcon build in target image container
+# target image : image_${PROJECT} or indicate by --image=target_image
+# [usage]
+# $@ : build target packages
+# build_project ros_packages
+# build_project --image=image_name ros_packages
+
+if [[ "$1" =~ ^--image= ]]; then
+  TAG=$(echo $1 | sed -e 's/^--image=//')
+  shift
+else
+  TAG=image_${PROJECT}${TARGET}${x86}
+fi
+
+source $ACSL_ROS2_DIR/4_docker/common/scripts/super_echo
+if [ $# -ge 1 ]; then
+  #packs=${@:1:($# - 1)}
+  packs=$@
+else
+  packs=$(my_packages)
+fi
+
+gecho "BUILD_PROJECT: build own ros packages on ${TAG}"
+
+cp ${ACSL_ROS2_DIR}/1_launcher/launch_build.sh ${ACSL_WORK_DIR}/1_launcher/
+chmod a+x ${ACSL_WORK_DIR}/1_launcher/launch_build.sh
+
+exist_image=$(docker images kasekiguchi/acsl-common:${TAG} | grep ${TAG})
+if [[ -z $exist_image ]]; then
+  recho "create ${TAG} image first by
+  dsbuild"
+else
+  dup --image=${TAG} build $packs
+  # acsl-common:$TAG を build コンテナとしてcommon サービスで起動
+  # 中で　launch_build.sh　を実行し自作パッケージをcolcon buildする
+  gecho "DLOGS: "
+  dlogs build
+  gecho "docker commit :: from build container to ${TAG} tagged image"
+  dcommit build ${TAG}
+  gecho "remove build container"
+  drm build
+fi
+rm -f ${ACSL_WORK_DIR}/1_launcher/launch_build.sh

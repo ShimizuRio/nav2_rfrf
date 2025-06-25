@@ -1,0 +1,9 @@
+#! /usr/bin/bash
+fx86=$(uname -a | grep x86)
+if [[ -z $fx86 ]]; then
+  TAG=$1
+else
+  TAG=${1%_x86}_x86
+fi
+echo ${TAG}
+docker pull kasekiguchi/acsl-common:$TAG

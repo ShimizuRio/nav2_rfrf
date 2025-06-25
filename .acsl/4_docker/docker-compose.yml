@@ -1,0 +1,93 @@
+services:
+  image_build:
+    # [build] call by dbuild command
+    # service to run rosdep update && colcon build
+    # TARGET_TAG : tag of build source image "acsl-common"
+    # TAG : output image tag 
+    # Example：TARGET_TAG=target TAG=output docker compose build common 
+    #  kasekiguchi/acsl-common:target  =>  kasekiguchi/acsl-common:output
+    image: kasekiguchi/acsl-common:${OTAG:-build}
+    build:
+      dockerfile: $ACSL_WORK_DIR/3_dockerfiles${TARGET}/dockerfile.${DF:-build} # 実行するdockerfile指定
+      args:
+        - BASE_IMAGE=${BASE_IMAGE:-kasekiguchi/acsl-common:${ITAG:-base}} # 元となるimage
+        # for x86 : osrf/ros:humble-desktop
+        # for arch : arm64v8/ros:humble
+
+  common:
+    # [up] call by dup command
+    # HOSTNAME : host pc name
+    # CONTAINER_NAME : output container name
+    # ROS_LAUNCH : shell script name containing ros2 start command in the container
+    # LARGS : arguments to the ROS_LAUNCH file
+    # ID : ROS_DOMAIN_ID
+    tty: true
+    privileged: true # privileged mode
+    image: kasekiguchi/acsl-common:${TAG:-base}
+    hostname: D${HOSTNAME:-rp5}
+    container_name: ${CONTAINER_NAME:-dev}
+    entrypoint:
+      [
+        "/usr/local/bin/dumb-init", # for quick stop of the container
+        "/common/scripts/entrypoint.sh" # execute at the container up
+      ]
+    command:
+      # arguments for entrypoint.sh (refer to the entrypoint.sh file)
+      [
+        "/common/ros_launcher/${ROS_LAUNCH:-launch_dev.sh}",
+        "${LARGS:-None}" # launch arguments
+      ]
+    working_dir: /root/ros2_ws
+    environment:
+      # set environment variable on docker 
+      - PROJECT=${PROJECT}
+      - TARGET=${TARGET}
+      - CONTAINER_NAME=${COMPOSE_PROJECT_NAME:-dev}
+      - TAG=${TAG:-image_${PROJECT}${TARGET}}
+      - HOST_USER=$LOGNAME # deprecate 
+      - ROS_DOMAIN_ID=${ROS_DOMAIN_ID} # set project unique id
+      - USER=$USER
+      - ACSL_ROS2_DIR=$ACSL_ROS2_DIR
+      - ACSL_WORK_DIR=$ACSL_WORK_DIR
+      - x86=$x86
+      - HOST_PATH=$PATH
+      # WSL : thanks to : https://dev.classmethod.jp/articles/wsl2-docker-gui-app-windows-display/
+      - DISPLAY=${DISPLAY}
+      - WAYLAND_DISPLAY=${WAYLAND_DISPLAY:-0}
+      - XDG_RUNTIME_DIR=$XDG_RUNTIME_DIR
+      - PULSE_SERVER=${PULSE_SERVER:-0}
+    # ports:
+    #   - 8080:8080
+
+    volumes:
+      # bind "host folder":"docker folder"
+      - ${HOME}/.ssh:/root/.ssh
+      - ./common:/common # common scripts
+      - $ACSL_WORK_DIR/1_launcher:/common/ros_launcher
+      - /dev:/dev # GPIO and USB devices
+      - vscode-server:/root/.vscode-server # VScode setting (preserve VScode extension)
+      - $ACSL_WORK_DIR/2_ros_packages:/root/ros2_ws/src/ros_packages
+      - /var/run/dbus/system_bus_socket:/var/run/dbus/system_bus_socket
+      # WSL
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /mnt/wslg:/mnt/wslg
+
+    # ▼ use host network to connect external device
+    #  Caution : set ROS_DOMAIN_ID properly to separate the namespace in ROS2
+    network_mode: host
+    #network_mode: bridge
+    ipc: host
+    deploy:
+      resources:
+        limits:
+          cpus: '1'
+          memory: 4g          
+    device_cgroup_rules:
+      # a (all), c (char), or b (block) 
+      # https://www.kernel.org/doc/Documentation/admin-guide/devices.txt
+      # require for Realsense
+      - 'c 81:* rmw' # video4linux
+      - 'c 189:* rmw' # USB serial converters - alternate devices
+
+volumes:
+  vscode-server: # named volume : preserve contents independent from containers

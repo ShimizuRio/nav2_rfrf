@@ -1,0 +1,25 @@
+# 各プロジェクトの最後に必ずやっておくbuild
+ARG BASE_IMAGE
+ARG ROS_DISTRO
+FROM ${BASE_IMAGE} as exp
+
+SHELL [ "/bin/bash","-c" ]
+
+RUN mkdir -p /root/ros2_ws/src && cd /root/ros2_ws/ \
+	&& rm -f /etc/ros/rosdep/sources.list.d/20-default.list \
+	&& rosdep init \
+	&& rosdep update && rosdep install -i --from-path src --rosdistro ${ROS_DISTRO} 
+
+RUN cd /root/ros2_ws/\
+	&& source /opt/ros/${ROS_DISTRO}/setup.bash \
+	&& colcon build --parallel-workers $(($(nproc)-1)) --cmake-clean-cache
+# ここでは ros_packagesはマウントしていないのでbuildはできない。
+# ros_packages以下の自作パッケージをbuildしたい場合はbuild_projectを使う
+
+RUN cd /root/ros2_ws\
+	&& source install/setup.bash \
+	&& apt autoremove -y \
+	&& apt-get autoremove -y \
+	&& apt clean \
+	&& apt-get clean \
+	&& rm -rf /var/lib/apt/lists/*

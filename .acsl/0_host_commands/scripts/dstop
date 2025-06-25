@@ -1,0 +1,9 @@
+#! /usr/bin/bash
+
+if [ $1 == "all" ]; then
+  echo "stop all nodes"
+  containers=$(docker ps -a | awk '{print $NF}' | sed -e 's/NAMES//')
+  docker stop $containers
+else
+  docker stop $@
+fi

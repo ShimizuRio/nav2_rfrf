@@ -1,0 +1,20 @@
+# Device naming rules based on product ID
+# For activate the setting, do following as root privileged 
+# /etc/udev/rules.d/90-custom.rules
+# udevadm control --reload-rules
+# udevadm trigger
+# # to check vendor and product id
+# lsusb : simple 
+# udevadm info -a -n ttyUSB0 : detailed
+# [Bluetooth] https://letraspberry.hatenablog.com/entry/479112490.html
+# bluetoothctl
+# > scan on
+# > pair XX:XX:XX:XX:XX:XX
+# > connect XX:XX:XX:XX:XX:XX
+# > trust XX:XX:XX:XX:XX:XX
+# > exit
+# jstest /dev/input/js0
+
+# Naming rules based on GPIO definitions
+## Primary UART port on Jetson Xavier
+KERNEL=="ttyTHS0*",  MODE="666",SYMLINK+="ttyGPIO" 

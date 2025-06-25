@@ -1,0 +1,9 @@
+#! /usr/bin/bash
+
+dup $@
+
+din $@
+# cd ~/ros2/docker
+# HOSTNAME=$(hostname | sed -e "s/-/_/g") docker compose --env-file env.$1 up common -d
+
+# docker compose --env-file env.$1 exec common bash

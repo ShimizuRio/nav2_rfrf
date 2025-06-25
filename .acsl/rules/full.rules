@@ -1,0 +1,58 @@
+# Device naming rules based on product ID
+# For activate the setting, do following as root privileged 
+# /etc/udev/rules.d/90-custom.rules
+# udevadm control --reload-rules
+# udevadm trigger
+# # to check vendor and product id
+# lsusb : simple 
+# udevadm info -a -n ttyUSB0 : detailed
+# [Bluetooth] https://letraspberry.hatenablog.com/entry/479112490.html
+# bluetoothctl
+# > scan on
+# > pair XX:XX:XX:XX:XX:XX
+# > connect XX:XX:XX:XX:XX:XX
+# > trust XX:XX:XX:XX:XX:XX
+# > exit
+# jstest /dev/input/js0
+
+KERNEL=="ttyUSB*",ATTRS{idVendor}=="0403",ATTRS{idProduct}=="6001",  MODE="666",SYMLINK+="ttyUSB-920MHz"
+# For RPLiDAR
+KERNEL=="ttyUSB*",ATTRS{idVendor}=="10c4",ATTRS{idProduct}=="ea60",  MODE="0777",SYMLINK+="ttyUSB-RPLiDAR"
+# For two RPLiDARs : check the kernels number related to the USB port
+KERNEL=="ttyUSB*",KERNELS=="1-3",ATTRS{idVendor}=="10c4",ATTRS{idProduct}=="ea60",  MODE="0777",SYMLINK+="ttyUSB-RPLiDAR_f"
+KERNEL=="ttyUSB*",KERNELS=="1-4",ATTRS{idVendor}=="10c4",ATTRS{idProduct}=="ea60",  MODE="0777",SYMLINK+="ttyUSB-RPLiDAR_b"
+# RPLiDAR - RPi5
+KERNEL=="ttyUSB*",KERNELS=="3-1",ATTRS{idVendor}=="10c4",ATTRS{idProduct}=="ea60",  MODE="0777",SYMLINK+="ttyUSB-RPLiDAR_f"
+KERNEL=="ttyUSB*",KERNELS=="1-1",ATTRS{idVendor}=="10c4",ATTRS{idProduct}=="ea60",  MODE="0777",SYMLINK+="ttyUSB-RPLiDAR_b"
+
+KERNEL=="ttyUSB*",ATTRS{idVendor}=="1a86",ATTRS{idProduct}=="7523",  MODE="666",SYMLINK+="ttyUSB-Arduino"
+KERNEL=="ttyUSB*",ATTRS{idVendor}=="0403",ATTRS{idProduct}=="6015",  MODE="666",SYMLINK+="ttyUSB-megarover"
+KERNEL=="ttyUSB*",ATTRS{idVendor}=="056e",ATTRS{idProduct}=="5004",  MODE="666",SYMLINK+="ttyUSB-WhillCR"
+# PX4
+KERNEL=="ttyACM*",ATTRS{idVendor}=="26ac",ATTRS{idProduct}=="0032",  MODE="666",SYMLINK+="ttyUSB-PX4"
+KERNEL=="ttyACM*",ATTRS{idVendor}=="1209",ATTRS{idProduct}=="5740",  MODE="666",SYMLINK+="ttyUSB-PX4"
+# PX4 v6X
+KERNEL=="ttyACM*",ATTRS{idVendor}=="3185",ATTRS{idProduct}=="0035",  MODE="666",SYMLINK+="ttyUSB-PX4"
+
+# KERNEL=="ttyACM*",ATTRS{idVendor}=="10c4",ATTRS{idProduct}=="ea60",  MODE="666",SYMLINK+="ttyUSB-LDS-02"
+
+# RTK-GNSS colcon build
+# Bus 004 Device 012: ID 1546:0502 U-Blox AG C099; ZED-F9P
+# Bus 004 Device 013: ID 1546:0503 U-Blox AG C099; ODIN-W2
+# Bus 004 Device 014: ID 1546:01a9 U-Blox AG u-blox GNSS receiver
+KERNEL=="ttyACM*",ATTRS{idVendor}=="1546",ATTRS{idProduct}=="01a9",  MODE="666",SYMLINK+="ttyUSB-ublox"
+
+# PS4Controller
+KERNEL=="js*",ATTRS{id/vendor}=="054c",ATTRS{id/product}=="09cc",  MODE="666",SYMLINK+="input/js-ps4"
+KERNEL=="js*",ATTRS{name}=="Wireless Controller",  MODE="666",SYMLINK+="input/js-ps4"
+
+
+# Naming rules based on GPIO definitions
+## Primary UART UART port on raspberrypi
+KERNEL=="ttyAMA0*",  MODE="666",SYMLINK+="ttyGPIO" 
+
+## Primary UART port on Jetson Xavier
+KERNEL=="ttyTHS0*",  MODE="666",SYMLINK+="ttyGPIO" 
+
+# Change permission mode for i2c (Raspberry Pi)
+KERNEL=="i2c*", MODE="666"

@@ -1,0 +1,11 @@
+#! /usr/bin/bash
+
+echo "git push : $PROJECT"
+cd $ACSL_WORK_DIR
+sed -i "s|$ACSL_ROS2_DIR|\$ACSL_ROS2_DIR|g" $ACSL_WORK_DIR/project_launch*.sh
+
+git add .
+git commit -m "Commit from WORKING DIR by $USER@$HOSTNAME: $1"
+sed -i "s|\$ACSL_ROS2_DIR|$ACSL_ROS2_DIR|g" $ACSL_WORK_DIR/project_launch*.sh
+
+git push

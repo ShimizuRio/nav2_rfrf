@@ -1,0 +1,36 @@
+#! /usr/bin/bash
+
+if [ ${HOSTNAME:0:1} == "D" ]; then
+  # docker container 内の場合
+  /common/scripts/hostbash "$ACSL_ROS2_DIR/4_docker/common/scripts/gpull $@"
+else
+  # SBC 内の場合
+  echo $1
+  echo "------------------"
+  if [[ $# -gt 0 ]]; then
+    cd $1
+  else
+    cd $ACSL_WORK_DIR
+  fi
+  bashrc=$(ls . | grep bashrc)
+  echo $(pwd)
+  echo "=========================="
+  echo ${bashrc}
+  if [[ -v ${bashrc} ]]; then
+    echo $(pwd)
+    cp -p bashrc ~/tttt
+  fi
+  git checkout .
+  git pull
+  echo "chmod in ${ACSL_WORK_DIR}"
+  chmod -R a+x $ACSL_WORK_DIR/1_launcher/
+  chmod -R a+x $ACSL_WORK_DIR/project_launch*
+  sed -i "s|\$ACSL_ROS2_DIR|$ACSL_ROS2_DIR|g" $ACSL_WORK_DIR/project_launch*.sh
+
+  if [[ -v $bashrc ]]; then
+    echo "chmod in ${ACSL_ROS2_DIR}"
+    chmod -R a+x $ACSL_ROS2_DIR/4_docker/common/
+    chmod -R a+x $ACSL_ROS2_DIR/0_host_commands/
+    mv ~/tttt ./bashrc
+  fi
+fi

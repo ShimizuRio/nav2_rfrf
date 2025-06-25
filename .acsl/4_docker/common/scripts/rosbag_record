@@ -1,0 +1,29 @@
+#!/bin/bash
+ARCHIVE_DIR="/common/ros_launcher/rosbags"
+
+# 保存先ディレクトリ名の決定（current + archive で重複チェック）
+DIR_NAME="$(date "+%y%m%d_%H%M")"
+echo $DIR_NAME
+SAVE_PATH="$ARCHIVE_DIR/$DIR_NAME"
+
+# archive整理：最新 5件を超えたら古い順から削除
+ALL_ARCH_DIRS=($(ls "$ARCHIVE_DIR"))
+NUM_TO_DELETE=$((${#ALL_ARCH_DIRS[@]} - 5))
+
+if [ "$NUM_TO_DELETE" -gt 0 ]; then
+  for ((i = 0; i < NUM_TO_DELETE; i++)); do
+    DEL_DIR="${ALL_ARCH_DIRS[$i]}"
+    echo "Deleting old archive bag '$DEL_DIR'"
+    rm -rf "$ARCHIVE_DIR/$DEL_DIR"
+  done
+fi
+
+if [[ $# -eq 0 ]]; then
+  target=(-a)
+else
+  target=("$@")
+fi
+# 最終的に録画を開始
+echo "Recording to $SAVE_PATH"
+echo "${target[@]}"
+ros2 bag record -o "$SAVE_PATH" "${target[@]}"

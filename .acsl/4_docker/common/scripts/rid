@@ -1,0 +1,5 @@
+#! /usr/bin/bash
+
+echo $ROS_DOMAIN_ID
+echo $ROS_DISTRO
+echo $PROJECT$TARGET

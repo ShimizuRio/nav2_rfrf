@@ -1,0 +1,27 @@
+#! /usr/bin/bash
+# [Usage]
+# get_data 192.168.100.112
+function open_pdf {
+  current_dir=$(pwd)
+  if [[ "$1" != "" ]]; then
+    file_name="$1"
+    if [[ "$file_name" == *"/"* ]]; then
+      IFS='/' read -ra segments <<<"$file_name"
+      file_name=${segments[-1]}
+    fi
+
+    file_path_win=$(wslpath -w "$current_dir/$file_name")
+    /mnt/c/Windows/System32/cmd.exe /c start msedge "" "$file_path_win"
+  fi
+}
+
+[[ "$1" =~ ^[0-9]+$ ]]; then
+  echo "scp $USER@${1}:$ACSL_ROS2_DIR/2_ros_packages/acs/acs/Log/latest/acsdata.pkl ."
+  scp $USER@${1}:$ACSL_ROS2_DIR/2_ros_packages/acs/acs/Log/latest/acsdata.pkl .
+fi
+
+echo "python3 $ACSL_ROS2_DIR/2_ros_packages/acs/acs/Plotter/sample.py"
+python3 $ACSL_ROS2_DIR/2_ros_packages/acs/acs/Plotter/sample.py
+
+echo "open pdf file"
+open_pdf figure.pdf

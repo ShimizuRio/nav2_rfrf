@@ -1,0 +1,30 @@
+#! /usr/bin/bash
+# [Usage 1]
+# >set_unique_var file key value
+# if key is not in file
+# add key=value to file
+# else replace value
+# [Usage 2]
+# >set_unique_var file key
+# if key is not in file
+# add key to file
+# else do nothing
+
+fpname=$1
+key=$2
+check=$(cat ~/.bashrc | grep "$key")
+if [[ $# > 2 ]]; then
+    value=${@:3:($# - 1)}
+    if [[ -z $check ]]; then # $fpname に存在しない場合
+        echo "ADD : $key=$value"
+        echo "$key=\"$value\"" >>$fpname
+    else
+        echo "REPLACE : $key=$value"
+        sed -i -e "/$key/c $key=\"$value\"" $fpname
+    fi
+else
+    if [[ -z $check ]]; then # $fpname に存在しない場合
+        echo "ADD : $key"
+        echo "$key" >>$fpname
+    fi
+fi

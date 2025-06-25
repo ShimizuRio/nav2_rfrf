@@ -1,0 +1,4 @@
+#! /usr/bin/bash
+
+docker logs -f --tail=10 $1
+# 末尾１０行だけ継続表示

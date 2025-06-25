@@ -1,0 +1,54 @@
+#! /bin/bash
+ACSL_WORK_DIR=$1
+export PROJECT=$2
+if [[ $# -eq 4 ]]; then
+  export TARGET=_$4
+else
+  export TARGET=""
+fi
+ACSL_ROS2_DIR=$(
+  cd $(dirname $0)
+  cd ../
+  pwd
+)
+cd $ACSL_ROS2_DIR
+chmod -R a+x $ACSL_ROS2_DIR/0_host_commands/scripts
+chmod -R a+x $ACSL_ROS2_DIR/4_docker/common/scripts
+
+if [[ -z $(cat $ACSL_ROS2_DIR/bashrc | grep ORGPATH) ]]; then
+  $ACSL_ROS2_DIR/0_host_commands/scripts/set_bashrc "export ORGPATH" $PATH
+else
+  source $ACSL_ROS2_DIR/bashrc
+  export PATH="$ORGPATH"
+fi
+export PATH="$PATH:$ACSL_ROS2_DIR/4_docker/common/scripts:$ACSL_ROS2_DIR/0_host_commands/scripts"
+source $ACSL_ROS2_DIR/4_docker/common/scripts/super_echo
+set_bashrc "source $ACSL_ROS2_DIR/4_docker/common/scripts/super_echo"
+set_bashrc "export PATH" $PATH
+set_bashrc "alias home" "source $ACSL_ROS2_DIR/4_docker/common/scripts/home.sh"
+set_bashrc "export PROJECT" $PROJECT
+set_bashrc "export TARGET" $TARGET
+set_bashrc "export ACSL_ROS2_DIR" $ACSL_ROS2_DIR
+set_bashrc "export ACSL_WORK_DIR" $ACSL_WORK_DIR
+set_bashrc "ROS_AUTOMATIC_DISCOVERY_RANGE" SUBNET
+fx86=$(uname -a | grep x86)
+if [[ -n $fx86 ]]; then
+  x86="_x86"
+else
+  x86=""
+fi
+set_bashrc "export x86" $x86
+
+set_bashrc "export DISPLAY" $DISPLAY
+set_bashrc "xhost +local: > /dev/null 2>&1"
+
+if [ $# -ge 3 ]; then
+  RID=$3
+else
+  RID=$(cat $ACSL_ROS2_DIR/ros2_id_list | grep -w $PROJECT | awk '{print $NF}')
+fi
+set_bashrc "export ROS_DOMAIN_ID" $RID
+export PS1="${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\[\033[00m\]\[\033[01;36m\]\h\[\033[00m\][${PROJECT}\${ROS_DOMAIN_ID}]:\[\033[01;34m\]\w\$\[\033[00m\] "
+set_bashrc "PS1" "${PS1}"
+
+#cat ~/.bashrc $ACSL_ROS2_DIR/bashrc >tmp && mv tmp $ACSL_ROS2_DIR/bashrc && rm -f tmp

@@ -1,0 +1,18 @@
+# Don't touch
+# git での管理用の工夫
+# 以下の文字列は setup_systemd で実行環境での各パスに置換
+# ACSL_ROS2_WORK_DIR ：$ACSL_ROS2_DIRに設定されているフォルダ
+# ACSL_ROS2_EXEC :project_launch${TARGET}.sh の絶対パス
+# 詳細は setup_systemd 参照
+
+[Unit]
+Description=ros_launcher
+After=syslog.target
+
+[Service]
+Type=oneshot
+WorkingDirectory=ACSL_WORK_DIR
+ExecStart=ACSL_ROS2_EXEC
+EnvironmentFile=ACSL_ROS2_DIR/bashrc_systemd
+[Install]
+WantedBy=default.target

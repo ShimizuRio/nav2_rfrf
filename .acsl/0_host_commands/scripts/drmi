@@ -1,0 +1,19 @@
+#! /usr/bin/bash
+# arguments : tag name
+source $ACSL_ROS2_DIR/4_docker/common/scripts/super_echo
+
+if [ $# -ge 1 ]; then
+  if [ $1 = "all" ]; then
+    recho "Delete all docker images"
+    #containers=$(docker ps -a | awk '{print $NF}' | sed -e 's/NAMES//')
+    #docker stop $containers
+    #docker rm $containers
+    docker rmi $(docker images -q)
+  else
+    recho "Delete docker image : kasekiguchi/acsl-common:$1"
+    docker rmi kasekiguchi/acsl-common:$1
+    #$(docker images -q kasekiguchi/acsl-common:$1)
+  fi
+fi
+
+dimages
