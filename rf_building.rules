@@ -1,0 +1,3 @@
+### vl53l1x ###
+# Change permission mode for i2c (Raspberry Pi)
+KERNEL=="i2c*", MODE="666"### vl53l1x END ###

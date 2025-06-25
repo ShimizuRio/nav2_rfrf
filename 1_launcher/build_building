@@ -1,0 +1,6 @@
+#! /usr/bin/bash
+
+source $ACSL_ROS2_DIR/bashrc
+echo $PROJECT
+echo $ROS_DOMAIN_ID
+build_project rf rf_interfaces switchbot_interfaces

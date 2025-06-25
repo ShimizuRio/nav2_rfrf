@@ -1,0 +1,16 @@
+ARG BASE_IMAGE
+ARG ROS_PACKAGE
+ARG SEPARATE
+ARG ROS_DISTRO
+FROM ${BASE_IMAGE} as base
+
+SHELL [ "/bin/bash","-c" ]
+
+#&& git clone --depth 1 https://github.com/CreedyNZ/rplidar_ros2.git -b ros2
+RUN mkdir -p ~/ros2_ws/src && cd ~/ros2_ws/src \
+  && git clone --depth 1 https://github.com/Slamtec/rplidar_ros.git -b ros2 \
+  && sed -i "/find_package(ament/a add_compile_options(-Wno-pedantic -Wno-pedantic -Wno-unused-parameter -Wno-unused-function -Wno-sign-compare -Wno-unused-value -Wno-cast-function-type -Wno-ignored-qualifiers)" ~/ros2_ws/src/rplidar_ros/CMakeLists.txt \
+  && cd ~/ros2_ws/ \
+  && colcon build \
+  && source install/setup.bash
+# rplidar_ros は colcon build でwarningでるが問題ないのでwarning抑制の記述を追加

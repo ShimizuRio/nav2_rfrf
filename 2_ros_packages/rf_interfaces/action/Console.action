@@ -1,0 +1,10 @@
+# Request type : desired mode transition
+string action
+---
+# Response type : return rsult
+string res
+---
+# Feedback type : return status
+string status
+float32[] pos
+float32[] ori

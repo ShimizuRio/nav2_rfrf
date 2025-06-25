@@ -1,0 +1,11 @@
+[submodule "2_ros_packages/megarover3_ros2"]
+	path = 2_ros_packages/megarover3_ros2
+	url = https://github.com/vstoneofficial/megarover3_ros2.git
+[submodule "2_ros_packages/vs_rover_options_description"]
+	path = 2_ros_packages/vs_rover_options_description
+	url = https://github.com/vstoneofficial/vs_rover_options_description.git
+	branch = humble
+[submodule "2_ros_packages/megarover3_ros2/megarover_description"]
+	path = 2_ros_packages/megarover3_ros2/megarover_description
+	url = https://github.com/vstoneofficial/megarover_description.git
+	branch = humble

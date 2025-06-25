@@ -1,0 +1,7 @@
+#! /usr/bin/bash
+
+source $ACSL_ROS2_DIR/bashrc
+echo ${PROJECT}${TARGET}${x86}
+echo ${ROS_DOMAIN_ID}
+
+build_project megarover3_bringup megarover_description vs_rover_options_description rf rf_interfaces

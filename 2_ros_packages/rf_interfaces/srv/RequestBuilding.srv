@@ -1,0 +1,6 @@
+# my_service.srv
+string request # "call elevator","ask place",
+int32[] data # 
+---
+string result
+

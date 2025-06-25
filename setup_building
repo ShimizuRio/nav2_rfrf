@@ -1,0 +1,5 @@
+#! /bin/bash
+
+dpull image_rf_building$x86
+dpull switchbot$x86
+1_launcher/build_building

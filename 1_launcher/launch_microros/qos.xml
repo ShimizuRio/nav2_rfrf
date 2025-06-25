@@ -1,0 +1,16 @@
+<dds>
+  <data_writer>
+    <qos>
+      <reliability>
+        <kind>BEST_EFFORT</kind>
+      </reliability>
+      <durability>
+        <kind>VOLATILE</kind>
+      </durability>
+      <history>
+        <kind>KEEP_LAST</kind>
+        <depth>1</depth>
+      </history>
+    </qos>
+  </data_writer>
+</dds>

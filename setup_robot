@@ -1,0 +1,11 @@
+#! /bin/bash
+
+#docker pull microros/micro-ros-agent:jazzy
+dpull image_rf_robot$x86
+dpull rplidar$x86
+dpull slam_toolbox$x86
+
+1_launcher/build_robot
+
+cd ~/.ssh/
+cat id_*.pub >>authorized_keys

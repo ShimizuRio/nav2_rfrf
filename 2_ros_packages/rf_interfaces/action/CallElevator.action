@@ -1,0 +1,13 @@
+# Goal
+string status # "hall","In",
+int32[] order # [current floor, target floor,option]
+
+
+---
+# Result
+string result
+
+
+---
+# Feedback
+string progress

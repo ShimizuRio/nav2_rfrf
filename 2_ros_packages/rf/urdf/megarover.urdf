@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<robot name="megarover">
+    <!-- Base link: Megarover -->
+    <link name="base_link" />
+    <link name="base_footprint" />
+    
+    <!-- Vistonでの定義を再現：mega_viewを立ち上げるのに必要 -->
+    <joint name="base_joint" type="fixed">
+        <parent link="base_footprint" />
+        <child link="base_link" />
+        <origin xyz="-0.1 0 0" rpy="0 0 -1.5708" />
+    </joint>
+    <!-- Front LIDAR link -->
+    <link name="front_lidar_link">
+        <visual>
+            <geometry>
+                <cylinder radius="0.05" length="0.1"/>
+            </geometry>
+        </visual>
+    </link>
+    <!-- Back LIDAR link -->
+    <link name="back_lidar_link">
+        <visual>
+            <geometry>
+                <cylinder radius="0.05" length="0.1"/>
+            </geometry>
+        </visual>
+    </link>
+
+    <!-- Joint connecting base_link to front_lidar_link -->
+    <joint name="base_to_front_lidar" type="fixed">
+        <parent link="base_footprint"/>
+        <child link="front_lidar_link"/>
+        <origin xyz="0.14 0 0.15" rpy="0 0 3.14"/>
+    </joint>
+    <!-- Joint connecting base_link to back_lidar_link -->
+    <joint name="base_to_back_lidar" type="fixed">
+        <parent link="base_footprint"/>
+        <child link="back_lidar_link"/>
+        <origin xyz="-0.3 0 0.15" rpy="0 0 0"/>
+    </joint>
+</robot>
