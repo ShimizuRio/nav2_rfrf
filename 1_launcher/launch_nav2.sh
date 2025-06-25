@@ -14,7 +14,7 @@ case $1 in
   # ros2 run ros_gz_bridge parameter_bridge /model/Robot1/odometry@nav_msgs/msg/Odometry@gz.msgs.Odometry --ros-args -r /model/Robot1/odometry:=/odom
   ros2 launch slam_toolbox online_async_launch.py slam_params_file:=/common/ros_launcher/launch_slam_toolbox/rf_robot_slam.yaml
   ;;
-"localization")
+"localization" | "bringup")
   if [[ $# -ge 2 ]]; then
     map="map_file_name:=/common/ros_launcher/launch_slam_toolbox/$2"
   else
