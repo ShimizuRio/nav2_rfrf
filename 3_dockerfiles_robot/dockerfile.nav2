@@ -1,0 +1,11 @@
+ARG BASE_IMAGE
+ARG ROS_PACKAGE
+ARG SEPARATE
+ARG ROS_DISTRO
+FROM ${BASE_IMAGE} as base
+
+SHELL [ "/bin/bash","-c" ]
+
+RUN apt update -y && apt install -y \
+  ros-${ROS_DISTRO}-navigation2 \
+  ros-${ROS_DISTRO}-nav2-bringup
