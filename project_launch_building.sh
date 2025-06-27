@@ -1,10 +1,10 @@
 #! /usr/bin/bash +x
 
-source $ACSL_ROS2_DIR/bashrc
+source /home/dstudent/nav2_rfrf/.acsl/bashrc
 echo ${PROJECT}${TARGET}${x86}
 echo ${ROS_DOMAIN_ID}
 
-cd $ACSL_ROS2_DIR/0_host_commands/scripts/
+cd /home/dstudent/nav2_rfrf/.acsl/0_host_commands/scripts/
 
 #dup vl53l1x
 dup switchbot
