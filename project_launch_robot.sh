@@ -43,6 +43,7 @@ if [ -f "$NAV2_COMPOSE_DIR/docker-compose.nav2.yml" ]; then
     # 中のプログラム(Nav2とrobot_node)は、DockerfileのCMD命令が自動で起動してくれる。
     (cd "$NAV2_COMPOSE_DIR" && docker-compose -f docker-compose.nav2.yml up -d --build)
     
+    echo ""
     echo "##############################################"
     echo "### Nav2 System launch command sent.       ###"
     echo "### Use 'dps' to check container status.   ###"
