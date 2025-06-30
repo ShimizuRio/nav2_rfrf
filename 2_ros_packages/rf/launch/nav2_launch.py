@@ -19,7 +19,7 @@ def generate_launch_description():
         default='/common/ros_launcher/launch_slam_toolbox/bld10_4F.yaml')
 
     params_file = LaunchConfiguration('params_file', 
-        default='/common/ros_launcher/launch_nav2/localization.yaml')
+        default='/common/ros_launcher/launch_nav2_demo/localization.yaml')
 
 
     # 1. Nav2スタック全体を起動（AMCL, Map Server, Controller, Plannerなど）
