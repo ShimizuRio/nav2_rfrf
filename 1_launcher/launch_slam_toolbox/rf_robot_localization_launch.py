@@ -21,7 +21,7 @@ def generate_launch_description():
 
     # params_file: /common/... にあるNav2パラメータファイルへの絶対パスを指定
     params_file = LaunchConfiguration('params_file', 
-        default='/common/ros_launcher/launch_nav2/localization.yaml')
+        default='/common/ros_launcher/launch_nav2_demo/localization.yaml')
 
 
     # --- 実行するアクションの定義 ---
