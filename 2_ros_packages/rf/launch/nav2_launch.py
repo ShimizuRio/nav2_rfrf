@@ -15,16 +15,12 @@ def generate_launch_description():
 
     use_sim_time = LaunchConfiguration('use_sim_time', default='False')
     
-    # map_path: /common/... にある地図ファイルへの絶対パスを指定
     map_path = LaunchConfiguration('map', 
         default='/common/ros_launcher/launch_slam_toolbox/bld10_4F.yaml')
 
-    # params_file: /common/... にあるNav2パラメータファイルへの絶対パスを指定
     params_file = LaunchConfiguration('params_file', 
         default='/common/ros_launcher/launch_nav2/localization.yaml')
 
-
-    # --- 実行するアクションの定義 ---
 
     # 1. Nav2スタック全体を起動（AMCL, Map Server, Controller, Plannerなど）
     # bringup_launch.pyをインクルードして、必要な設定を渡します
@@ -39,19 +35,16 @@ def generate_launch_description():
         }.items()
     )
 
-    # 2. 【最重要】あなたの「頭脳」ノード (robot_node.py) を起動
-    # これにより、Nav2へのゴール指示やタスク管理が行われます
+    # robot_node.pyを起動
     start_robot_node_cmd = Node(
-        package=my_main_pkg_name,             # robot_node.pyが含まれるパッケージ名
-        executable='robot_node', # setup.pyのentry_pointsで設定した実行可能ファイル名
+        package=my_main_pkg_name, 
+        executable='robot_node',
         name='robot_node',
         output='screen'
     )
 
-    # --- LaunchDescriptionの構築 ---
     ld = LaunchDescription()
 
-    # 作成したアクションをLaunchDescriptionに追加
     ld.add_action(DeclareLaunchArgument('use_sim_time', default_value='False', description='Use simulation (Gazebo) clock if true'))
     ld.add_action(DeclareLaunchArgument('map', default_value=map_path, description='Full path to map file'))
     ld.add_action(DeclareLaunchArgument('params_file', default_value=params_file, description='Full path to Nav2 params file'))
