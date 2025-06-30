@@ -2,12 +2,18 @@ version: '3.8'
 
 services:
   # この環境のサービス名
-  nav2-practice-env:
+  nav2_demo:
     image: nav2-practice
     build:
-      context: .
+      context: ../3_dockerfiles_robot
       dockerfile: dockerfile.nav2
     container_name: nav2_demo
+
+    # --- ここが最重要：デバッグモードへの切り替え ---
+    # コンテナのメインの仕事を「無限に待機する」ことに上書きする
+    # これにより、ローンチファイルのエラーでコンテナが落ちなくなる
+    command: ["sleep", "infinity"]
+
     volumes:
       # bind "host folder":"docker folder"
       - ${HOME}/.ssh:/root/.ssh
