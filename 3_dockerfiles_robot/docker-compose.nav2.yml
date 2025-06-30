@@ -50,10 +50,11 @@ services:
         ROS_DISTRO: "humble"
     container_name: nav2_demo
     
-    # --- ここが最重要：デバッグモードへの切り替え ---
-    # DockerfileのCMDを上書きし、コンテナのメインの仕事を「無限に待機する」ことに変更
-    # これにより、ローンチファイルのエラーでコンテナが落ちなくなる
-    command: ["sleep", "infinity"]
+    # --- ここが最重要：デバッグモードへの最終切り替え ---
+    # ベースイメージのENTRYPOINTを、ただのbashに強制的に上書きする
+    entrypoint: /bin/bash
+    # コンテナのメインの仕事を「無限に待機する」ことにする
+    command: ["-c", "sleep infinity"]
 
     # --- volumesやenvironmentは変更なし ---
     volumes:
