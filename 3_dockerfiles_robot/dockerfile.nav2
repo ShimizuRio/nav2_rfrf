@@ -28,7 +28,7 @@
 
 # STEP 1: ベースイメージとして、研究室の公式イメージを指定
 # これにより、entrypoint.shなどの便利な機能を引き継ぐ
-ARG BASE_IMAGE=kasekiguchi/acsl-common:slam_toolbox_x86
+ARG BASE_IMAGE=kasekiguchi/acsl-common:image_rf_robot_x86
 FROM ${BASE_IMAGE}
 
 # STEP 2: Nav2関連のパッケージを追加でインストールする
@@ -36,11 +36,11 @@ ARG ROS_DISTRO=humble
 RUN apt-get update && \
     # --- ここで必要なパッケージをすべて一度にインストールする ---
     apt-get install -y --no-install-recommends \
-    # 基本ツール
-    git \
-    vim \
-    wget \
-    ros-dev-tools \
+    # # 基本ツール
+    # git \
+    # vim \
+    # wget \
+    # ros-dev-tools \
     # Nav2関連パッケージ
     ros-${ROS_DISTRO}-navigation2 \
     ros-${ROS_DISTRO}-nav2-bringup \
