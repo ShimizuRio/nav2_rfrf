@@ -36,34 +36,40 @@ ENV TZ=Asia/Tokyo
 ARG ROS_DISTRO=humble
 
 # --- MODIFIED: ここからが最重要の修正点 ---
-# STEP 3: ROS 2リポジトリ設定の強制更新
-# ベースイメージの設定が古い可能性に対応するため、ROSリポジトリを再設定する
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    curl \
-    gnupg \
-    lsb-release \
-    && rm -rf /var/lib/apt/lists/*
-RUN curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg
-RUN echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | tee /etc/apt/sources.list.d/ros2.list > /dev/null
-
-# STEP 4: 必要なパッケージの一括インストール
-# 再設定したリポジトリ情報を使って、updateとinstallを1つのRUN命令で実行
+# STEP 3: ROS 2リポジトリ設定の完全な再構築
 RUN apt-get update && \
+    # まず、キーをダウンロードするためのツール(curl)などをインストール
+    apt-get install -y --no-install-recommends curl gnupg lsb-release && \
+    
+    # ★★★★★ ここが最後の鍵 ★★★★★
+    # ベースイメージに含まれる古いROS 2の接続設定ファイルを、すべて削除する
+    rm -f /etc/apt/sources.list.d/ros2*.list && \
+    
+    # 最新のGPGキー（会員証）をダウンロードして、正しい場所に配置する
+    curl -sSL https://raw.githubusercontent.com/ros/rosdistro/master/ros.key -o /usr/share/keyrings/ros-archive-keyring.gpg && \
+    
+    # 最新の接続先サーバーのアドレスを、新しいファイルに書き込む
+    echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/ros-archive-keyring.gpg] http://packages.ros.org/ros2/ubuntu $(. /etc/os-release && echo $UBUNTU_CODENAME) main" | tee /etc/apt/sources.list.d/ros2-new.list > /dev/null && \
+    
+    # --- ここからが本番のインストール ---
+    # 最新の設定で、もう一度パッケージリストを更新する
+    apt-get update && \
+    
+    # 必要なパッケージをすべてインストールする
     apt-get install -y --no-install-recommends \
-    # 基本ツール
     git \
     vim \
     wget \
     ros-dev-tools \
-    # Nav2関連パッケージ
     ros-${ROS_DISTRO}-navigation2 \
     ros-${ROS_DISTRO}-nav2-bringup \
+    
     # パッケージのキャッシュを削除して、イメージサイズを小さくする
     && rm -rf /var/lib/apt/lists/*
 
-# STEP 5: ROS 2環境の自動読み込み設定
+# STEP 4: ROS 2環境の自動読み込み設定
 RUN echo "source /opt/ros/${ROS_DISTRO}/setup.bash" >> /root/.bashrc
 RUN echo "if [ -f /root/ros2_ws/install/setup.bash ]; then source /root/ros2_ws/install/setup.bash; fi" >> /root/.bashrc
 
-# STEP 6: デフォルトの作業ディレクトリを設定
+# STEP 5: デフォルトの作業ディレクトリを設定
 WORKDIR /root/ros2_ws
