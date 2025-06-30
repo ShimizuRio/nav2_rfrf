@@ -50,7 +50,7 @@ services:
         ROS_DISTRO: "humble"
     container_name: nav2_demo
     
-    # --- ここが最重要：デバッグモードへの最終切り替え ---
+    # デバッグモード
     # ベースイメージのENTRYPOINTを、ただのbashに強制的に上書きする
     entrypoint: /bin/bash
     # コンテナのメインの仕事を「無限に待機する」ことにする
@@ -58,16 +58,11 @@ services:
 
     # --- volumesやenvironmentなどの他の設定 ---
     volumes:
-      # SSHキーを共有
       - ${HOME}/.ssh:/root/.ssh
-      # あなたのソースコードとランチャーを共有
       - ../1_launcher:/common/ros_launcher
       - ../2_ros_packages:/root/ros2_ws/src
-      # ハードウェアデバイスを共有
       - /dev:/dev
-      # VSCodeの設定を永続化（★この名前付きボリュームを、下で定義します）
       - vscode-server:/root/.vscode-server
-      # GUI表示用の設定
       - /tmp/.X11-unix:/tmp/.X11-unix
       - /mnt/wslg:/mnt/wslg
       
