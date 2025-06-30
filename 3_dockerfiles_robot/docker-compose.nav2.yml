@@ -37,54 +37,36 @@
 #     # volumes:
 #     #   - /tmp/.X11-unix:/tmp/.X11-unix
 
-# ======================================================================
-# docker-compose.nav2.yml (最終完成版)
-# - undefined volumeエラーを修正し、公式の設定を統合しました。
-# - これが、あなたのNav2システムを起動するための、唯一の正しい指示書です。
-# ======================================================================
 version: '3.8'
 
 services:
-  # このサービス/コンテナの名前を nav2_demo とする
   nav2_demo:
-    # イメージ名を、あなたがビルドするカスタムイメージ名に設定
     image: local/nav2_practice
-    # コンテナに固定の名前を付ける
-    container_name: nav2_demo
-    
-    # どのDockerfileを使ってビルドするかを定義
     build:
-      context: ../3_dockerfiles_robot # dockerfile.nav2 があるディレクトリを指定
-      dockerfile: dockerfile.nav2      # あなたが作成したDockerfileの名前
+      context: .
+      dockerfile: dockerfile.nav2
       args:
-        # Dockerfile内の変数に値を渡す
         BASE_IMAGE: "kasekiguchi/acsl-common:image_rf_robot_x86"
         ROS_DISTRO: "humble"
-        
-    # --- volumes, environmentなどの他の設定 ---
+    container_name: nav2_demo
+    
+    # --- ここが最重要：デバッグモードへの切り替え ---
+    # DockerfileのCMDを上書きし、コンテナのメインの仕事を「無限に待機する」ことに変更
+    # これにより、ローンチファイルのエラーでコンテナが落ちなくなる
+    command: ["sleep", "infinity"]
+
+    # --- volumesやenvironmentは変更なし ---
     volumes:
-      # SSHキーを共有
-      - ${HOME}/.ssh:/root/.ssh
-      # あなたのソースコードとランチャーを共有
-      - ../1_launcher:/common/ros_launcher
       - ../2_ros_packages:/root/ros2_ws/src
-      # ハードウェアデバイスを共有
+      - ../1_launcher:/common/ros_launcher
       - /dev:/dev
-      # VSCodeの設定を永続化（★この名前付きボリュームを、下で定義します）
-      - vscode-server:/root/.vscode-server
-      # GUI表示用の設定
       - /tmp/.X11-unix:/tmp/.X11-unix
-      - /mnt/wslg:/mnt/wslg
-      
+      - vscode-server:/root/.vscode-server
     tty: true
     network_mode: host
     privileged: true
     environment:
       - DISPLAY=${DISPLAY}
-      - NVIDIA_VISIBLE_DEVICES=all
-      - NVIDIA_DRIVER_CAPABILITIES=all
 
-# --- ここが最重要：undefined volumeエラーの修正 ---
-# 'vscode-server'という名前のボリュームを、ここでグローバルに定義する
 volumes:
   vscode-server:
