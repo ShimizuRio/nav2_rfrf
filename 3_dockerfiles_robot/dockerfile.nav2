@@ -27,7 +27,7 @@
 #     colcon build
 
 # STEP 1: ベースイメージとして、研究室のイメージを指定
-ARG BASE_IMAGE=kasekiguchi/acsl-common:image_rf_robot_x86
+ARG BASE_IMAGE=kasekiguchi/acsl-common:slam_toolbox_x86
 FROM ${BASE_IMAGE}
 
 # STEP 2: 基本設定
