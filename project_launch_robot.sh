@@ -41,13 +41,11 @@ NAV2_COMPOSE_DIR="${PROJECT_ROOT}/3_dockerfiles_robot"
 if [ -f "$NAV2_COMPOSE_DIR/docker-compose.nav2.yml" ]; then
     # Nav2コンテナをビルド＆起動する。
     # 中のプログラム(Nav2とrobot_node)は、DockerfileのCMD命令が自動で起動してくれる。
-    (cd "$NAV2_COMPOSE_DIR" && docker-compose -f docker-compose.nav2.yml up -d --build)
+    (cd "$NAV2_COMPOSE_DIR" && docker compose -f docker-compose.nav2.yml up -d --build)
     
     echo ""
     echo "##############################################"
     echo "### Nav2 System launch command sent.       ###"
-    echo "### Use 'dps' to check container status.   ###"
-    echo "### Use 'dlogs nav2_demo' to see the logs. ###"
     echo "##############################################"
 else
     echo "[ERROR] Custom Nav2 compose file not found at: $NAV2_COMPOSE_DIR/docker-compose.nav2.yml"

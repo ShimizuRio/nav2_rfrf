@@ -22,13 +22,23 @@ def generate_launch_description():
         default='/common/ros_launcher/launch_nav2_demo/localization.yaml')
 
 
-    # 1. Nav2スタック全体を起動（AMCL, Map Server, Controller, Plannerなど）
-    # bringup_launch.pyをインクルードして、必要な設定を渡します
-    start_nav2_cmd = IncludeLaunchDescription(
+    # 1. localization（AMCL + map_server）を起動
+    start_localization_cmd = IncludeLaunchDescription(
         PythonLaunchDescriptionSource(
-            os.path.join(nav2_bringup_pkg_path, 'launch', 'bringup_launch.py')),
+            os.path.join(nav2_bringup_pkg_path, 'launch', 'localization_launch.py')),
         launch_arguments={
             'map': map_path,
+            'use_sim_time': use_sim_time,
+            'params_file': params_file,
+            'autostart': 'true'
+        }.items()
+    )
+
+    # 2. navigation（controller, planner など）を起動
+    start_navigation_cmd = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource(
+            os.path.join(nav2_bringup_pkg_path, 'launch', 'navigation_launch.py')),
+        launch_arguments={
             'use_sim_time': use_sim_time,
             'params_file': params_file,
             'autostart': 'true'
