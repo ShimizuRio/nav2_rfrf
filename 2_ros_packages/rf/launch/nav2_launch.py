@@ -59,7 +59,8 @@ def generate_launch_description():
     ld.add_action(DeclareLaunchArgument('map', default_value=map_path, description='Full path to map file'))
     ld.add_action(DeclareLaunchArgument('params_file', default_value=params_file, description='Full path to Nav2 params file'))
 
-    ld.add_action(start_nav2_cmd)
+    ld.add_action(start_localization_cmd)
+    ld.add_action(start_navigation_cmd)
     ld.add_action(start_robot_node_cmd)
 
     return ld
