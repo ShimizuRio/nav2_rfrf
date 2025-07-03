@@ -50,7 +50,8 @@ def generate_launch_description():
         package=my_main_pkg_name, 
         executable='robot_node',
         name='robot_node',
-        output='screen'
+        output='screen',
+        parameters=[{'use_sim_time': use_sim_time}]
     )
 
     ld = LaunchDescription()

@@ -1,12 +1,3 @@
-# ======================================================================
-# Nav2 Parameters for Megarover (Real Robot) - TF Frame ID Final Fix
-# - Merged duplicate sections for clarity.
-# - Added 'global_frame' and 'local_frame' to costmap configurations.
-# - This resolves the "unconnected TF tree" error.
-# ======================================================================
-
-# --- 各コンポーネントごとの設定 ---
-
 amcl:
   ros__parameters:
     use_sim_time: False
@@ -69,14 +60,12 @@ controller_server:
 
 # --- コストマップの設定 ---
 global_costmap:
-  # --- ADDED: global_frameを明示的に指定 ---
-  global_frame: map
-  robot_base_frame: base_footprint
   ros__parameters:
     use_sim_time: False
+    global_frame: map
+    robot_base_frame: base_footprint
     footprint: "[[0.3, 0.3], [0.3, -0.3], [-0.3, -0.3], [-0.3, 0.3]]"
     plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
-    # (各レイヤーの詳細設定...)
     update_frequency: 1.0
     publish_frequency: 1.0
     width: 10
@@ -84,14 +73,12 @@ global_costmap:
     resolution: 0.05
 
 local_costmap:
-  # --- ADDED: local_frameを明示的に指定 ---
-  local_frame: odom
-  robot_base_frame: base_footprint
   ros__parameters:
     use_sim_time: False
+    local_frame: odom
+    robot_base_frame: base_footprint
     footprint: "[[0.3, 0.3], [0.3, -0.3], [-0.3, -0.3], [-0.3, 0.3]]"
     plugins: ["obstacle_layer", "inflation_layer"]
-    # (各レイヤーの詳細設定...)
     update_frequency: 5.0
     publish_frequency: 2.0
     width: 3
