@@ -90,9 +90,9 @@ class ROBOT(Node):
             self.nid = self.cid
             self.x[0:2] = self.reference.P[self.cid-1,:]
             self.ref[0:3] = self.x[0:3] 
-            result = subprocess.run(['hostbash', 'drm', 'slam_toolbox'], capture_output=True, text=True)
+            result = subprocess.run(['hostbash', 'drm', 'nav2_demo'], capture_output=True, text=True)
             print(f"drm: {result}")
-            result = subprocess.run(['hostbash', 'dup', 'slam_toolbox', 'localization', "bld10_" + str(self.floor) + "F", str(self.x.tolist())], capture_output=True, text=True)
+            result = subprocess.run(['hostbash', 'dup', 'nav2_demo', 'localization', "bld10_" + str(self.floor) + "F", str(self.x.tolist())], capture_output=True, text=True)
             print(f"dup: bld10_{str(self.floor)}F {result}")
             self.reference.update_floor(self.floor,"init") # set self.M
         self.reference.set_gid()
@@ -203,9 +203,9 @@ class ROBOT(Node):
                     print(f"move ele: 1")
 
                     self.reference.update_floor(self.target_floor,"elevator") # set x, cid, floor, etc 
-                    result = subprocess.run(['hostbash', 'drm', 'slam_toolbox'], capture_output=True, text=True)
+                    result = subprocess.run(['hostbash', 'drm', 'nav2_demo'], capture_output=True, text=True)
                     print(f"drm: {result}")
-                    result = subprocess.run(['hostbash', 'dup', 'slam_toolbox', 'localization', "bld10_" + str(self.target_floor) + "F", str(self.x.tolist())], capture_output=True, text=True)
+                    result = subprocess.run(['hostbash', 'dup', 'nav2_demo', 'localization', "bld10_" + str(self.target_floor) + "F", str(self.x.tolist())], capture_output=True, text=True)
                     print(f"dup: bld10_{str(self.target_floor)}F {result}")
                     sleep(2)
 
