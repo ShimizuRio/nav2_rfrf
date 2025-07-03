@@ -1,20 +1,32 @@
-#20250612更新
+# ======================================================================
+# Nav2 Parameters for Megarover (Real Robot) - TF Frame ID Final Fix
+# - Merged duplicate sections for clarity.
+# - Added 'global_frame' and 'local_frame' to costmap configurations.
+# - This resolves the "unconnected TF tree" error.
+# ======================================================================
+
+# --- 各コンポーネントごとの設定 ---
+
 amcl:
   ros__parameters:
-    use_sim_time: false
-    base_frame_id: "base_footprint"
+    use_sim_time: False
+    # フレームID: あなたのロボットのTFツリーに合わせる
     odom_frame_id: "odom"
-    scan_topic: "/scan"
-    update_min_d: 0.2  # 近い: scan_matching に似た
-    update_min_a: 0.2
+    base_frame_id: "base_footprint"
+    global_frame_id: "map"
+    scan_topics: ["/scan"] # 以前のファイルからscan_topicを複数形に修正
+    
+    # AMCLの挙動を調整するパラメータ
     min_particles: 200
     max_particles: 5000
+    update_min_d: 0.2
+    update_min_a: 0.2
     resample_interval: 1
     transform_tolerance: 0.5
     recovery_alpha_slow: 0.001
     recovery_alpha_fast: 0.1
-    laser_max_range: 40.0  # ← slam_toolbox設定より流用
-    laser_min_range: 0.1   # ← slam_toolbox設定より流用
+    laser_max_range: 40.0
+    laser_min_range: 0.1
     tf_broadcast: true
     alpha1: 0.2
     alpha2: 0.2
@@ -22,61 +34,66 @@ amcl:
     alpha4: 0.2
     alpha5: 0.2
 
-# --- ★重要：map_serverからyaml_filenameを削除 ---
-# yaml_filenameはローンチファイルから渡されるため、ここで指定すると競合やエラーの原因になります。
 map_server:
   ros__parameters:
     use_sim_time: False
+    # yaml_filenameはローンチファイルから渡すため、ここでは指定しない
 
 bt_navigator:
   ros__parameters:
-    use_sim_time: false
-
-controller_server:
-  ros__parameters:
-    use_sim_time: false
-
-planner_server:
-  ros__parameters:
-    use_sim_time: false
+    use_sim_time: False
 
 behavior_server:
   ros__parameters:
-    use_sim_time: false
+    use_sim_time: False
 
-local_costmap:
-  ros__parameters:
-    use_sim_time: false
-    robot_base_frame: "base_footprint"
-    footprint: "[[0.3, 0.3], [0.3, -0.3], [-0.3, -0.3], [-0.3, 0.3]]"
-    resolution: 0.05
-    width: 3
-    height: 3
-    plugins: ["obstacle_layer", "inflation_layer"]
-
-global_costmap:
-  ros__parameters:
-    use_sim_time: false
-    robot_base_frame: "base_footprint"
-    footprint: "[[0.3, 0.3], [0.3, -0.3], [-0.3, -0.3], [-0.3, 0.3]]"
-    resolution: 0.05
-    width: 10
-    height: 10
-    plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
-
+# --- ★重要：重複していた定義を統合 ---
 planner_server:
   ros__parameters:
+    use_sim_time: False
     expected_planner_frequency: 1.0
     planner_plugins: ["GridBased"]
     GridBased:
       plugin: "nav2_navfn_planner/NavfnPlanner"
+      tolerance: 0.5
 
 controller_server:
   ros__parameters:
+    use_sim_time: False
     controller_frequency: 10.0
-    min_x_velocity_threshold: 0.001
-    min_y_velocity_threshold: 0.5
-    min_theta_velocity_threshold: 0.001
     controller_plugins: ["FollowPath"]
     FollowPath:
       plugin: "nav2_regulated_pure_pursuit_controller::RegulatedPurePursuitController"
+      xy_goal_tolerance: 0.25
+      lookahead_dist: 0.6
+
+# --- コストマップの設定 ---
+global_costmap:
+  # --- ADDED: global_frameを明示的に指定 ---
+  global_frame: map
+  robot_base_frame: base_footprint
+  ros__parameters:
+    use_sim_time: False
+    footprint: "[[0.3, 0.3], [0.3, -0.3], [-0.3, -0.3], [-0.3, 0.3]]"
+    plugins: ["static_layer", "obstacle_layer", "inflation_layer"]
+    # (各レイヤーの詳細設定...)
+    update_frequency: 1.0
+    publish_frequency: 1.0
+    width: 10
+    height: 10
+    resolution: 0.05
+
+local_costmap:
+  # --- ADDED: local_frameを明示的に指定 ---
+  local_frame: odom
+  robot_base_frame: base_footprint
+  ros__parameters:
+    use_sim_time: False
+    footprint: "[[0.3, 0.3], [0.3, -0.3], [-0.3, -0.3], [-0.3, 0.3]]"
+    plugins: ["obstacle_layer", "inflation_layer"]
+    # (各レイヤーの詳細設定...)
+    update_frequency: 5.0
+    publish_frequency: 2.0
+    width: 3
+    height: 3
+    resolution: 0.05
