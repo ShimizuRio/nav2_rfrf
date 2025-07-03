@@ -14,6 +14,10 @@ setup(
         (os.path.join('share', package_name, 'launch'), glob('launch/*.py')),
         (os.path.join('share', package_name, 'urdf'), glob('urdf/*.urdf')),
         (os.path.join('share', package_name, 'config'), glob('config/*.json')),
+        # ★ ここを追加 ★
+        (os.path.join('share', package_name, 'acsl_modules', 'config'),glob('rf/acsl_modules/config/*.json')),
+        # # ここを追加
+        # ('lib/python3.10/site-packages/rf/acsl_modules/config', glob('rf/acsl_modules/config/*.json')),
     ],
     install_requires=['setuptools'],
     zip_safe=True,
