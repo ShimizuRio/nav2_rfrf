@@ -48,7 +48,7 @@ services:
       args:
         BASE_IMAGE: "kasekiguchi/acsl-common:image_rf_robot_x86"
         ROS_DISTRO: "humble"
-    container_name: nav2_demo
+    container_name: ${CONTAINER_NAME:-nav2_demo_rf_robot_common}
     
     # デバッグモード
     # ベースイメージのENTRYPOINTを、ただのbashに強制的に上書きする
