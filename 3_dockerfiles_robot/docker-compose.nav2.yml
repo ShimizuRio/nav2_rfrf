@@ -41,7 +41,7 @@ version: '3.8'
 
 services:
   nav2_demo:
-    image: local/nav2_practice
+    image: kasekiguchi/acsl-common:nav2_demo_x86
     build:
       context: .
       dockerfile: dockerfile.nav2
