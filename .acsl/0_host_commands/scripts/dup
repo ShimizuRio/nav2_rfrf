@@ -66,10 +66,21 @@ if [ $# -ge 1 ]; then
       echo "TAG=$TAG CONTAINER_NAME=${CONTAINER_NAME} COMPOSE_PROJECT_NAME=${1,,}_${PROJECT,,}${TARGET,,} ROS_LAUNCH=$ROS_LAUNCH LARGS=$launch_args HOSTNAME=$(hostname | sed -e 's/-/_/g') docker compose ${compose} up common -d"
       TAG=${TAG} CONTAINER_NAME=${CONTAINER_NAME} COMPOSE_PROJECT_NAME=${1,,}_${PROJECT,,}${TARGET,,} ROS_LAUNCH=$ROS_LAUNCH LARGS=$launch_args HOSTNAME=$(hostname | sed -e 's/-/_/g') docker compose ${compose} up common -d
     else
-      echo "COMPOSE_PROJECT_NAME=${CONTAINER_NAME,,}_${PROJECT,,}${TARGET,,} docker compose exec common /common/ros_launcher/$ROS_LAUNCH $launch_args"
-      COMPOSE_PROJECT_NAME=${CONTAINER_NAME,,}_${PROJECT,,}${TARGET,,} docker compose exec common /common/ros_launcher/$ROS_LAUNCH $launch_args
-      #exec common /common/scripts/Dcmd ${cmd[@]}
-    fi
+      # 起動済みなら起動しているコンテナ名を探して exec する
+      get_running_common_container() {
+      docker ps --format '{{.Names}}' | grep "^${1,,}_${PROJECT,,}${TARGET,,}_common$" | head -n1
+      }
+      common_container=$(get_running_common_container "$1")
+      if [[ -z $common_container ]]; then
+        echo "[ERROR] Running container not found for project $1"
+        exit 1
+      fi
+      echo "docker compose exec $common_container /common/ros_launcher/$ROS_LAUNCH $launch_args"
+      docker compose exec "$common_container" /common/ros_launcher/$ROS_LAUNCH $launch_args
+    #   echo "COMPOSE_PROJECT_NAME=${CONTAINER_NAME,,}_${PROJECT,,}${TARGET,,} docker compose exec common /common/ros_launcher/$ROS_LAUNCH $launch_args"
+    #   COMPOSE_PROJECT_NAME=${CONTAINER_NAME,,}_${PROJECT,,}${TARGET,,} docker compose exec common /common/ros_launcher/$ROS_LAUNCH $launch_args
+    #   #exec common /common/scripts/Dcmd ${cmd[@]}
+    # fi
   fi
 fi
 
