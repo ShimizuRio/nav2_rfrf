@@ -80,7 +80,7 @@ if [ $# -ge 1 ]; then
     #   echo "COMPOSE_PROJECT_NAME=${CONTAINER_NAME,,}_${PROJECT,,}${TARGET,,} docker compose exec common /common/ros_launcher/$ROS_LAUNCH $launch_args"
     #   COMPOSE_PROJECT_NAME=${CONTAINER_NAME,,}_${PROJECT,,}${TARGET,,} docker compose exec common /common/ros_launcher/$ROS_LAUNCH $launch_args
     #   #exec common /common/scripts/Dcmd ${cmd[@]}
-    # fi
+    fi
   fi
 fi
 
