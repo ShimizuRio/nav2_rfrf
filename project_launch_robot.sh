@@ -28,7 +28,7 @@ TAG=rplidar${x86} CONTAINER_NAME=rplidar_back COMPOSE_PROJECT_NAME=rplidar_back_
 # --- あなた専用のNav2環境を起動 ---
 # 古いコンテナは起動しないようにコメントアウト
 dup rf_robot
-# dup slam_toolbox localization bld10_4F
+dup slam_toolbox localization bld10_4F
 
 echo ""
 echo "#####################################################"
@@ -37,11 +37,19 @@ echo "#####################################################"
 
 # Nav2用のdocker-compose.ymlがあるディレクトリへのパスも動的に解決します。
 NAV2_COMPOSE_DIR="${PROJECT_ROOT}/3_dockerfiles_robot"
+NAV2_IMAGE_NAME="kasekiguchi/acsl-common:nav2_demo_x86"
 
+# Nav2イメージが未作成なら自動でビルドする
+if ! docker images "${NAV2_IMAGE_NAME}" | grep nav2_demo_x86 > /dev/null; then
+    echo "[INFO] nav2_demo_x86 image not found. Building now..."
+    docker build -t ${NAV2_IMAGE_NAME} -f "${NAV2_COMPOSE_DIR}/dockerfile.nav2" "${NAV2_COMPOSE_DIR}"
+else
+    echo "[INFO] nav2_demo_x86 image already exists. Skipping build."
+fi
+
+# 通常のdocker-composeで起動（--build は不要）
 if [ -f "$NAV2_COMPOSE_DIR/docker-compose.nav2.yml" ]; then
-    # Nav2コンテナをビルド＆起動する。
-    # 中のプログラム(Nav2とrobot_node)は、DockerfileのCMD命令が自動で起動してくれる。
-    (cd "$NAV2_COMPOSE_DIR" && docker compose -f docker-compose.nav2.yml up -d --build)
+    (cd "$NAV2_COMPOSE_DIR" && docker compose -f docker-compose.nav2.yml up -d)
     
     echo ""
     echo "##############################################"
