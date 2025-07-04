@@ -40,7 +40,7 @@
 version: '3.8'
 
 services:
-  nav2_demo:
+  common:
     image: kasekiguchi/acsl-common:nav2_demo_x86
     build:
       context: .
