@@ -28,7 +28,12 @@ case $1 in
   #echo "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
   #echo "start: "$start "@" ${@:3:($# - 1)}
   cp -f /common/ros_launcher/launch_slam_toolbox/rf_robot_localization_launch.py /opt/ros/${ROS_DISTRO}/share/slam_toolbox/launch/localization_launch.py
-  ros2 launch nav2_bringup localization_launch.py params_file:=/common/ros_launcher/launch_nav2_demo/localization.yaml "$map" "$start"
+  # ros2 launch nav2_bringup localization_launch.py params_file:=/common/ros_launcher/launch_nav2_demo/localization.yaml "$map" "$start"
+  ros2 launch nav2_bringup localization_launch.py \
+  params_file:=/common/ros_launcher/launch_nav2_demo/localization.yaml \
+  map_file_name:=/common/ros_launcher/launch_slam_toolbox/bld10_4F.yaml \
+  map_start_pose:="[0.0, 0.0, 1.5708]"
+  
   # cp /common/ros_launcher/launch_slam_toolbox/rf_robot_localization_launch.py /opt/ros/${ROS_DISTRO}/share/slam_toolbox/launch/
   #ros2 launch slam_toolbox /common/ros_launcher/launch_slam_toolbox/rf_robot_localization_launch.py slam_params_file:=/common/ros_launcher/launch_slam_toolbox/rf_robot_localization.yaml $map $start
   ;;

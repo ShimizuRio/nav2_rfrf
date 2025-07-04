@@ -1,11 +1,10 @@
 amcl:
   ros__parameters:
     use_sim_time: False
-    # フレームID: あなたのロボットのTFツリーに合わせる
     odom_frame_id: "odom"
     base_frame_id: "base_footprint"
     global_frame_id: "map"
-    scan_topics: ["/scan"] # 以前のファイルからscan_topicを複数形に修正
+    scan_topics: ["/scan"]
     
     # AMCLの挙動を調整するパラメータ
     min_particles: 200
